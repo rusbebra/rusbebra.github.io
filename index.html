@@ -48,6 +48,60 @@
       }
     }
 
+    taskInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        const taskText = taskInput.value.trim();
+        const timeText = timeInput.value;
+
+        if (taskText) {
+          const taskItem = document.createElement('li');
+          taskItem.classList.add('task-item');
+
+          const taskTextElement = document.createElement('span');
+          taskTextElement.textContent = taskText;
+
+          const timeTextElement = document.createElement('span');
+          timeTextElement.textContent = timeText;
+
+          taskItem.appendChild(taskTextElement);
+          taskItem.appendChild(timeTextElement);
+
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Удалить';
+          deleteButton.addEventListener('click', function() {
+            taskList.removeChild(taskItem);
+            clearTimeout(taskItem.timeoutId);
+          });
+
+          taskItem.appendChild(deleteButton);
+          taskList.appendChild(taskItem);
+
+          taskInput.value = '';
+          timeInput.value = '';
+
+          const [hours, minutes] = timeText.split(':');
+          const taskTime = new Date();
+          taskTime.setHours(hours);
+          taskTime.setMinutes(minutes);
+          taskTime.setSeconds(0);
+
+          const currentTime = new Date();
+          const timeoutDuration = taskTime - currentTime;
+
+          if (timeoutDuration > 0) {
+            taskItem.timeoutId = setTimeout(function() {
+              showNotification(taskText);
+            }, timeoutDuration);
+          }
+        }
+      }
+    });
+
+    function showNotification(taskText) {
+      if (notificationPermission === 'granted') {
+        new Notification(`Время на задачу "${taskText}" истекло`);
+      }
+    }
   </script>
 </body>
 </html>
