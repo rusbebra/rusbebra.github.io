@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Напоминалка</title>
+  <style>
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>Список задач</h1>
+  <input type="text" id="taskInput" placeholder="Добавьте задачу...">
+  <input type="time" id="timeInput" placeholder="Выберите время">
+  <button id="requestPermissionBtn">Разрешить уведомления</button>
+  <span id="notificationStatus">Статус уведомлений не определен</span>
+  <ul id="taskList"></ul>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const timeInput = document.getElementById('timeInput');
+    const taskList = document.getElementById('taskList');
+    const requestPermissionBtn = document.getElementById('requestPermissionBtn');
+    const notificationStatus = document.getElementById('notificationStatus');
+
+    let notificationPermission = null;
+
+    requestPermissionBtn.addEventListener('click', function() {
+      Notification.requestPermission().then(function(permission) {
+        notificationPermission = permission;
+        updateNotificationStatus(permission);
+        console.log('Статус разрешения на уведомления:', permission);
+      });
+    });
+
+    function updateNotificationStatus(permission) {
+      switch (permission) {
+        case 'granted':
+          notificationStatus.textContent = 'Уведомления разрешены';
+          break;
+        case 'denied':
+          notificationStatus.textContent = 'Уведомления запрещены';
+          break;
+        default:
+          notificationStatus.textContent = 'Статус уведомлений не определен';
+      }
+    }
+
+  </script>
+</body>
+</html>
